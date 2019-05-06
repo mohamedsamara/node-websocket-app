@@ -22,5 +22,9 @@
   "bugs": {
     "url": "https://github.com/mohamedsamara/Node-Websocket-App/issues"
   },
-  "homepage": "https://github.com/mohamedsamara/Node-Websocket-App#readme"
+  "homepage": "https://github.com/mohamedsamara/Node-Websocket-App#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
 }
