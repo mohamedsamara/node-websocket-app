@@ -1,0 +1,26 @@
+{
+  "name": "node-websocket-app",
+  "version": "1.0.0",
+  "description": "Node Websocket Application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohamedsamara/Node-Websocket-App.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "ejs",
+    "socket-io"
+  ],
+  "author": "Mohamed Samara (https://github.com/mohamedsamara)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mohamedsamara/Node-Websocket-App/issues"
+  },
+  "homepage": "https://github.com/mohamedsamara/Node-Websocket-App#readme"
+}
