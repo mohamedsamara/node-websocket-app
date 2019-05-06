@@ -4,3 +4,4 @@ bower_components
 package-lock.json
 
 # Cruft
+.env

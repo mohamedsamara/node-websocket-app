@@ -14,6 +14,7 @@
   "keywords": [
     "node",
     "express",
+    "mongoose",
     "ejs",
     "socket-io"
   ],
@@ -25,6 +26,8 @@
   "homepage": "https://github.com/mohamedsamara/Node-Websocket-App#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "express": "^4.16.4"
+    "dotenv": "^8.0.0",
+    "express": "^4.16.4",
+    "mongoose": "^5.5.5"
   }
 }
