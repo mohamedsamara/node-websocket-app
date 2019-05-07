@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include ./partials/head %>
+  </head>
+  <body>
+    <header class="header">
+      <% include ./partials/header %>
+    </header>
+    <main class="main">
+      <div class="wrapper">
+        <div class="container">
+          <%- body %>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <% include ./partials/footer %>
+    </footer>
+
+    <noscript> You need to enable JavaScript to run this app. </noscript>
+
+    <script src="/bower_components/jquery/dist/jquery.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>
