@@ -4,4 +4,5 @@ bower_components
 package-lock.json
 
 # Cruft
+.DS_Store
 .env
