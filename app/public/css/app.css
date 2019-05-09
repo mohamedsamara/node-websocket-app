@@ -1,4 +1,21 @@
 /* start application styles */
+
+/* scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #0a6ed2f0;
+  border: 2px solid #0a6ed2f0;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #ccc;
+}
+/* scrollbar styles */
+
 html,
 body {
   min-height: 100%;
@@ -15,6 +32,17 @@ body {
   height: 60px;
   line-height: 60px;
   background-color: #f5f5f5;
+}
+
+.register h1,
+.login h1 {
+  color: #698e8e;
+  font-size: 1.9rem;
+}
+
+.btn-submit {
+  background-color: #698e8e;
+  border-color: #698e8e;
 }
 
 /* end application styles */

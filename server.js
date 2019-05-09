@@ -9,10 +9,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const db = require('./app/config/keys').mongoURI;
+const routes = require('./app/routes');
 
 // Connect to MongoDB
 mongoose
-  .connect(db, { useNewUrlParser: true })
+  .connect(
+    db,
+    { useNewUrlParser: true },
+  )
   .then(() => console.log('MongoDB Connected!'))
   .catch(err => console.log(err));
 
@@ -27,10 +31,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json()); // parse form data client
 
-// index page
-app.get('/', function(req, res) {
-  res.render('pages/index');
-});
+app.use('/', routes);
 
 app.listen(PORT, () => {
   console.log(`app listening on port ${PORT}!`);
