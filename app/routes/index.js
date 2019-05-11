@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 
 const keys = require('../config/keys');
 
@@ -62,11 +63,9 @@ router.post('/login', (req, res) => {
       console.log('user', user);
     }
 
-    // Check Password
     bcrypt.compare(password, user.password).then(isMatch => {
       if (isMatch) {
         const payload = { id: user.id, name: user.name };
-
         jwt.sign(
           payload,
           keys.secretOrKey,
@@ -74,7 +73,7 @@ router.post('/login', (req, res) => {
           (err, token) => {
             res.status(200).json({
               success: true,
-              token: 'JWT ' + token,
+              token: token,
               user: {
                 id: user.id,
                 username: user.username,
@@ -84,18 +83,35 @@ router.post('/login', (req, res) => {
           },
         );
       } else {
-        console.log('Password incorrect');
+        res.status(404).json({
+          success: false,
+          error: 'Password Incorrect',
+        });
       }
     });
   });
 });
 
+// router.get(
+//   '/logout',
+//   passport.authenticate('jwt', { session: false }),
+//   function(req, res) {
+//     req.logout();
+//     res.json({ success: true, msg: 'Sign out successfully.' });
+//   },
+// );
+
 router.get(
-  '/signout',
-  passport.authenticate('jwt', { session: false }),
-  function(req, res) {
-    req.logout();
-    res.json({ success: true, msg: 'Sign out successfully.' });
+  '/profile',
+  passport.authenticate('jwt', {
+    session: false,
+    successRedirect: '/',
+    failureRedirect: '/login',
+  }),
+  (req, res) => {
+    console.log('toto', req.headers.authorization);
+
+    res.json({ user: req.user });
   },
 );
 
