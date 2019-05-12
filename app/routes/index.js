@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 
 const keys = require('../config/keys');
+const isAuth = require('../auth/verify');
 
 // login view
 router.get('/login', (req, res) => {
@@ -54,43 +55,53 @@ router.post('/register', (req, res) => {
   });
 });
 
-router.post('/login', (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
-
-  User.findOne({ email }).then(user => {
-    if (!user) {
-      console.log('user', user);
-    }
-
-    bcrypt.compare(password, user.password).then(isMatch => {
-      if (isMatch) {
-        const payload = { id: user.id, name: user.name };
-        jwt.sign(
-          payload,
-          keys.secretOrKey,
-          { expiresIn: 3600 },
-          (err, token) => {
-            res.status(200).json({
-              success: true,
-              token: token,
-              user: {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-              },
-            });
-          },
-        );
-      } else {
-        res.status(404).json({
-          success: false,
-          error: 'Password Incorrect',
-        });
-      }
-    });
-  });
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', {
+    successRedirect: '/dashboard',
+    failureRedirect: '/users/login',
+  })(req, res, next);
 });
+
+// router.post('/login', (req, res) => {
+//   const email = req.body.email;
+//   const password = req.body.password;
+//
+//   User.findOne({ email }).then(user => {
+//     if (!user) {
+//       console.log('user', user);
+//     }
+//
+//     bcrypt.compare(password, user.password).then(isMatch => {
+//       if (isMatch) {
+//
+//
+//
+//         const payload = { id: user.id, name: user.name };
+//         jwt.sign(
+//           payload,
+//           keys.secretOrKey,
+//           { expiresIn: 3600 },
+//           (err, token) => {
+//             res.status(200).json({
+//               success: true,
+//               token: token,
+//               user: {
+//                 id: user.id,
+//                 username: user.username,
+//                 email: user.email,
+//               },
+//             });
+//           },
+//         );
+//       } else {
+//         res.status(404).json({
+//           success: false,
+//           error: 'Password Incorrect',
+//         });
+//       }
+//     });
+//   });
+// });
 
 // router.get(
 //   '/logout',
@@ -101,19 +112,25 @@ router.post('/login', (req, res) => {
 //   },
 // );
 
-router.get(
-  '/profile',
-  passport.authenticate('jwt', {
-    session: false,
-    successRedirect: '/',
-    failureRedirect: '/login',
-  }),
-  (req, res) => {
-    console.log('toto', req.headers.authorization);
+// router.get(
+//   '/profile',
+//   passport.authenticate('jwt', {
+//     session: false,
+//     successRedirect: '/',
+//     failureRedirect: '/login',
+//   }),
+//   (req, res) => {
+//     console.log('toto', req.headers.authorization);
+//
+//     res.json({ user: req.user });
+//   },
+// );
 
-    res.json({ user: req.user });
-  },
-);
+router.get('/profile', isAuth, (req, res) => {
+  console.log('toto', req.headers.authorization);
+
+  res.json({ user: req.user });
+});
 
 // homepage view
 router.get('/', (req, res) => {
