@@ -39,6 +39,9 @@ app.use(
     secret: 'secret',
     resave: true,
     saveUninitialized: true,
+    cookie: {
+      expires: 600000,
+    },
   }),
 );
 
@@ -46,8 +49,11 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// require('./app/auth/passportJwt')(passport);
+// Below is the setup for passport Local Strategy
 require('./app/auth/passportLocal')(passport);
+
+// Below is the setup for passport JWT Strategy
+// require('./app/auth/passportJwt')(passport);
 
 app.use('/', routes);
 

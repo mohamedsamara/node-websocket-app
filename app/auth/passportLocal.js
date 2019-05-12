@@ -8,7 +8,6 @@ const User = mongoose.model('user');
 module.exports = function(passport) {
   passport.use(
     new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
-      console.log('email here', email);
       User.findOne({
         email: email,
       }).then(user => {
@@ -20,7 +19,6 @@ module.exports = function(passport) {
         bcrypt.compare(password, user.password, (err, isMatch) => {
           if (err) throw err;
           if (isMatch) {
-            console.log('Math!!!!!!');
             return done(null, user);
           } else {
             return done(null, false, { message: 'Password incorrect' });

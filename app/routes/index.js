@@ -2,19 +2,18 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
-const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
+// const jwt = require('jsonwebtoken');
 
 const keys = require('../config/keys');
-const isAuth = require('../auth/verify');
+const { verifyToken, passAuthenticated } = require('../auth/verify');
 
 // login view
-router.get('/login', (req, res) => {
+router.get('/login', passAuthenticated, (req, res) => {
   res.render('pages/login');
 });
 
 // register view
-router.get('/register', (req, res) => {
+router.get('/register', passAuthenticated, (req, res) => {
   res.render('pages/register');
 });
 
@@ -23,6 +22,23 @@ router.get('/chat', (req, res) => {
   res.render('pages/chat');
 });
 
+// profile view
+router.get('/profile', verifyToken, (req, res) => {
+  // res.json({ user: req.user });
+  res.render('pages/profile');
+});
+
+// homepage view
+router.get('/', (req, res) => {
+  res.render('pages/index');
+});
+
+// 404 not found view
+router.get('*', (req, res) => {
+  res.render('pages/404Page');
+});
+
+// register process
 router.post('/register', (req, res) => {
   const name = req.body.name;
   const email = req.body.email;
@@ -55,13 +71,15 @@ router.post('/register', (req, res) => {
   });
 });
 
+// login process
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/users/login',
+    successRedirect: '/profile',
+    failureRedirect: '/login',
   })(req, res, next);
 });
 
+// Below is the login implemented by passport JWT Strategy
 // router.post('/login', (req, res) => {
 //   const email = req.body.email;
 //   const password = req.body.password;
@@ -70,12 +88,8 @@ router.post('/login', (req, res, next) => {
 //     if (!user) {
 //       console.log('user', user);
 //     }
-//
 //     bcrypt.compare(password, user.password).then(isMatch => {
 //       if (isMatch) {
-//
-//
-//
 //         const payload = { id: user.id, name: user.name };
 //         jwt.sign(
 //           payload,
@@ -102,45 +116,6 @@ router.post('/login', (req, res, next) => {
 //     });
 //   });
 // });
-
-// router.get(
-//   '/logout',
-//   passport.authenticate('jwt', { session: false }),
-//   function(req, res) {
-//     req.logout();
-//     res.json({ success: true, msg: 'Sign out successfully.' });
-//   },
-// );
-
-// router.get(
-//   '/profile',
-//   passport.authenticate('jwt', {
-//     session: false,
-//     successRedirect: '/',
-//     failureRedirect: '/login',
-//   }),
-//   (req, res) => {
-//     console.log('toto', req.headers.authorization);
-//
-//     res.json({ user: req.user });
-//   },
-// );
-
-router.get('/profile', isAuth, (req, res) => {
-  console.log('toto', req.headers.authorization);
-
-  res.json({ user: req.user });
-});
-
-// homepage view
-router.get('/', (req, res) => {
-  res.render('pages/index');
-});
-
-// 404 not found view
-router.get('*', (req, res) => {
-  res.render('pages/404Page');
-});
 
 module.exports = router;
 
