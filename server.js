@@ -55,6 +55,12 @@ require('./app/auth/passportLocal')(passport);
 // Below is the setup for passport JWT Strategy
 // require('./app/auth/passportJwt')(passport);
 
+// inject user data in all templates
+app.use(function(req, res, next) {
+  res.locals.user = req.user;
+  next();
+});
+
 app.use('/', routes);
 
 app.listen(PORT, () => {

@@ -7,6 +7,9 @@ const passport = require('passport');
 const keys = require('../config/keys');
 const { verifyToken, passAuthenticated } = require('../auth/verify');
 
+// Bring in User Model
+let User = require('../models/user');
+
 // login view
 router.get('/login', passAuthenticated, (req, res) => {
   res.render('pages/login');
@@ -24,18 +27,12 @@ router.get('/chat', (req, res) => {
 
 // profile view
 router.get('/profile', verifyToken, (req, res) => {
-  // res.json({ user: req.user });
   res.render('pages/profile');
 });
 
 // homepage view
 router.get('/', (req, res) => {
   res.render('pages/index');
-});
-
-// 404 not found view
-router.get('*', (req, res) => {
-  res.render('pages/404Page');
 });
 
 // register process
@@ -79,6 +76,17 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
+// logout process
+router.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/login');
+});
+
+// 404 not found view
+router.get('*', (req, res) => {
+  res.render('pages/404Page');
+});
+
 // Below is the login implemented by passport JWT Strategy
 // router.post('/login', (req, res) => {
 //   const email = req.body.email;
@@ -118,6 +126,3 @@ router.post('/login', (req, res, next) => {
 // });
 
 module.exports = router;
-
-// Bring in User Model
-let User = require('../models/user');
