@@ -1,0 +1,20 @@
+<div class="row mt-5">
+  <div class="col-md-6 m-auto">
+    <div class="card card-body">
+      <h1 class="text-center mb-3">Chat Here</h1>
+      <form action="/chat/new" method="POST">
+        <div class="form-group">
+          <label for="recipient">Select recipient?</label>
+           <select class="form-control" id="recipient" name="recipient">
+           </select>
+        </div>
+        <div class="form-group">
+          <textarea id="message" name="message" class="form-control" rows="3">Type your message here....</textarea>
+        </div>
+        <button type="submit" id="chat-submit" class="btn btn-primary btn-submit">
+          Send
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

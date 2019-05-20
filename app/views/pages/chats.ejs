@@ -1,0 +1,21 @@
+
+<a href="chat/add" class="btn btn-default">Add Chat</a>
+<div class="list-group">
+  <% for(var i=0; i < conversations.length; i++) { %>
+
+    <% for(var j=0; j < conversations[i].length; j++) { %>
+
+     <a href="chat/<%= conversations[i][j].conversationId %>" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+     <%= conversations[i][j].body %>
+
+     <div class="chat-details">
+       <span><%= conversations[i][j].sender.name %></span>
+       <strong><%=  moment(conversations[i][j].createdAt).format('MMM-DD-YYYY'); %></strong>
+     </div>
+     </a>
+
+    <% } %>
+
+  <% } %>
+
+</div>

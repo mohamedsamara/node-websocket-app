@@ -2,13 +2,17 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const moment = require('moment');
+
 // const jwt = require('jsonwebtoken');
 
 const keys = require('../config/keys');
 const { verifyToken, passAuthenticated } = require('../auth/verify');
 
-// Bring in User Model
-let User = require('../models/user');
+// Bring in Models
+const User = require('../models/user'),
+  Conversation = require('../models/conversation'),
+  Message = require('../models/message');
 
 // login view
 router.get('/login', passAuthenticated, (req, res) => {
@@ -20,9 +24,108 @@ router.get('/register', passAuthenticated, (req, res) => {
   res.render('pages/register');
 });
 
-// chat view
-router.get('/chat', (req, res) => {
-  res.render('pages/chat');
+// get all recipients
+router.post('/recipients', verifyToken, (req, res) => {
+  User.find({}, function(err, users) {
+    if (err) {
+      console.log(err);
+    } else {
+      return res.json(users);
+    }
+  });
+});
+
+// all chats view
+router.get('/chats', verifyToken, (req, res) => {
+  Conversation.find({ participants: req.user._id })
+    .select('_id')
+    .exec((err, conversations) => {
+      if (err) {
+        res.send({ error: err });
+        return next(err);
+      }
+
+      const fullConversations = [];
+      conversations.forEach(conversation => {
+        Message.find({ conversationId: conversation._id })
+          .sort('-createdAt')
+          .limit(1)
+          .populate({
+            path: 'sender',
+            select: 'name username',
+          })
+          .exec((err, message) => {
+            if (err) {
+              res.send({ error: err });
+              return next(err);
+            }
+            fullConversations.push(message);
+            if (fullConversations.length === conversations.length) {
+              res.render('pages/chats', {
+                conversations: fullConversations,
+                moment: moment,
+              });
+            }
+          });
+      });
+    });
+});
+
+// create a single chat
+router.get('/chat/add', verifyToken, (req, res) => {
+  res.render('pages/add-chat');
+});
+
+// single chat view
+router.get('/chat/:id', verifyToken, (req, res) => {});
+
+// reply on single chat
+router.post('/chat/test/:id', verifyToken, (req, res) => {
+  // res.render('pages/chat');
+});
+
+// create single chat view
+router.post('/chat/new', verifyToken, (req, res, next) => {
+  if (!req.body.recipient) {
+    res
+      .status(422)
+      .send({ error: 'Please choose a valid recipient for your message.' });
+    return next();
+  }
+
+  if (!req.body.message) {
+    res.status(422).send({ error: 'Please enter a message.' });
+    return next();
+  }
+
+  const conversation = new Conversation({
+    participants: [req.user._id, req.body.recipient],
+  });
+
+  conversation.save((err, newConversation) => {
+    if (err) {
+      res.send({ error: err });
+      return next(err);
+    }
+
+    const message = new Message({
+      conversationId: newConversation._id,
+      body: req.body.message,
+      sender: req.user._id,
+    });
+
+    message.save((err, newMessage) => {
+      if (err) {
+        res.send({ error: err });
+        return next(err);
+      }
+
+      return res.status(200).json({
+        message: 'Conversation started!',
+        conversationId: conversation._id,
+      });
+    });
+  });
 });
 
 // profile view
