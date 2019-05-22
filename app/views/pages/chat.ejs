@@ -1,0 +1,24 @@
+<div class="row mt-5">
+  <div class="col-md-6 m-auto">
+    <div class="card card-body">
+      <h1 class="text-center mb-3">Chat Here</h1>
+      <form action="/chat/reply" method="POST">
+          <div class="chat-window">
+            <% for(var i=0; i < conversations.length; i++) { %>
+                <p>
+                  <label><%= conversations[i].sender.name %></label>
+                  <%= conversations[i].body %>
+                </p>
+            <% } %>
+          </div>
+
+          <div class="form-group">
+            <textarea id="message" name="message" class="form-control" rows="3">Type your message here....</textarea>
+          </div>
+        <button type="submit" id="chat-submit" class="btn btn-primary btn-submit">
+          Reply
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

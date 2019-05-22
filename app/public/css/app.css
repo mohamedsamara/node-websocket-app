@@ -45,4 +45,19 @@ body {
   border-color: #698e8e;
 }
 
+.chat-window {
+  border: 1px solid #ccc;
+  margin: 10px 0px;
+  padding: 20px;
+}
+
+.chat-window label {
+  font-weight: 500;
+}
+
+.chat-window p {
+  border-bottom: 1px solid #e9e9e9;
+  color: #555;
+}
+
 /* end application styles */
