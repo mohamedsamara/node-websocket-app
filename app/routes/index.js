@@ -90,31 +90,11 @@ router.get('/chat/:id', verifyToken, (req, res, next) => {
         res.send({ error: err });
         return next(err);
       }
-      console.log('messages', messages);
       res.render('pages/chat', {
         conversations: messages,
         conversationId: req.params.id,
-        moment: moment,
       });
     });
-});
-
-// reply on a single chat
-router.post('/chat/reply/:id', verifyToken, (req, res, next) => {
-  const reply = new Message({
-    conversationId: req.params.id,
-    body: req.body.message,
-    sender: req.user._id,
-  });
-
-  reply.save((err, sentReply) => {
-    if (err) {
-      res.send({ error: err });
-      return next(err);
-    }
-
-    res.redirect('/chats');
-  });
 });
 
 // create single chat

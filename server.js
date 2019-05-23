@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 5000;
 
 const db = require('./app/config/keys').mongoURI;
 const routes = require('./app/routes');
+const ioServer = require('./app/socket');
 
 // Connect to MongoDB
 mongoose
@@ -21,6 +22,15 @@ mongoose
   )
   .then(() => console.log('MongoDB Connected!'))
   .catch(err => console.log(err));
+
+let server;
+server = app.listen(PORT, () => {
+  console.log(`app listening on port ${PORT}!`);
+});
+
+const io = require('socket.io').listen(server);
+
+ioServer(io);
 
 // set public folder
 app.use(express.static(path.join(__dirname, 'app/public')));
@@ -62,7 +72,3 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', routes);
-
-app.listen(PORT, () => {
-  console.log(`app listening on port ${PORT}!`);
-});
