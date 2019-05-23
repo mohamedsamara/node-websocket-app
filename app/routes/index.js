@@ -71,11 +71,16 @@ router.get('/chats', verifyToken, (req, res) => {
     });
 });
 
+// add chat view
+router.get('/chat/add', verifyToken, (req, res) => {
+  res.render('pages/add-chat');
+});
+
 // single chat view
-router.get('/chat/:id', verifyToken, (req, res) => {
+router.get('/chat/:id', verifyToken, (req, res, next) => {
   Message.find({ conversationId: req.params.id })
     .select('createdAt body sender')
-    .sort('-createdAt')
+    .sort('createdAt')
     .populate({
       path: 'sender',
       select: 'name username',
@@ -88,19 +93,28 @@ router.get('/chat/:id', verifyToken, (req, res) => {
       console.log('messages', messages);
       res.render('pages/chat', {
         conversations: messages,
+        conversationId: req.params.id,
         moment: moment,
       });
     });
 });
 
-// reply on single chat
-router.post('/chat/test/:id', verifyToken, (req, res) => {
-  // res.render('pages/chat');
-});
+// reply on a single chat
+router.post('/chat/reply/:id', verifyToken, (req, res, next) => {
+  const reply = new Message({
+    conversationId: req.params.id,
+    body: req.body.message,
+    sender: req.user._id,
+  });
 
-// add chat view
-router.get('/chat/add', verifyToken, (req, res) => {
-  res.render('pages/add-chat');
+  reply.save((err, sentReply) => {
+    if (err) {
+      res.send({ error: err });
+      return next(err);
+    }
+
+    res.redirect('/chats');
+  });
 });
 
 // create single chat

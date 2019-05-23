@@ -2,13 +2,21 @@
   <div class="col-md-6 m-auto">
     <div class="card card-body">
       <h1 class="text-center mb-3">Chat Here</h1>
-      <form action="/chat/reply" method="POST">
+      <form action="/chat/reply/<%=conversationId %>" method="POST">
           <div class="chat-window">
             <% for(var i=0; i < conversations.length; i++) { %>
-                <p>
-                  <label><%= conversations[i].sender.name %></label>
-                  <%= conversations[i].body %>
-                </p>
+                  <% if((user._id).toString() == (conversations[i].sender._id).toString()){ %>
+                    <p class="owner">
+                      <label>You</label>
+                        <span><%= conversations[i].body %></span>
+                    </p>
+                  <% } else{ %>
+                    <p class="sender">
+                      <label><%= conversations[i].sender.name %></label>
+                        <span><%= conversations[i].body %></span>
+                    </p>
+                  <% } %>
+                  <strong><%=  moment(conversations[i].createdAt).format('MMM-DD-YYYY'); %></strong>
             <% } %>
           </div>
 
