@@ -68,6 +68,7 @@ require('./app/auth/passportLocal')(passport);
 // inject user data in all templates
 app.use(function(req, res, next) {
   res.locals.user = req.user;
+  req.io = io;
   next();
 });
 

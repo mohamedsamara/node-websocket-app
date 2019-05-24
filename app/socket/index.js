@@ -4,32 +4,15 @@ exports = module.exports = function(io) {
   io.on('connection', socket => {
     console.log('websocket connected!');
 
-    socket.on('new message', data => {
-      const reply = new Message({
-        conversationId: data.conversationId.toString(),
-        body: data.body,
-        sender: data.sender.toString(),
-      });
+    socket.on('typing', data => {
+      // io.broadcast.emit('typing', data);
 
-      reply.save((err, sentReply) => {
-        if (err) {
-        }
+      socket.broadcast.emit('typing', data);
 
-        Message.find({ conversationId: data.conversationId })
-          .select('createdAt body sender')
-          .sort('-createdAt')
-          .limit(1)
-          .populate({
-            path: 'sender',
-            select: 'name username',
-          })
-          .exec((err, messages) => {
-            if (err) {
-            }
-            io.sockets.emit('new message', messages);
-          });
-      });
+      // io.sockets.emit('typing', data);
     });
+
+    socket.on('new message', data => {});
 
     socket.on('disconnect', () => {
       console.log('websocket disconnected!');

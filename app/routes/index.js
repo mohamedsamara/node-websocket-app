@@ -76,6 +76,36 @@ router.get('/chat/add', verifyToken, (req, res) => {
   res.render('pages/add-chat');
 });
 
+// reply on a single chat
+router.post('/chat/reply/:id', verifyToken, (req, res, next) => {
+  const reply = new Message({
+    conversationId: req.params.id,
+    body: req.body.message,
+    sender: req.user._id,
+  });
+
+  reply.save((err, sentReply) => {
+    if (err) {
+      res.send({ error: err });
+      return next(err);
+    }
+
+    Message.find({ conversationId: req.params.id })
+      .select('createdAt body sender')
+      .sort('-createdAt')
+      .limit(1)
+      .populate({
+        path: 'sender',
+        select: 'name username',
+      })
+      .exec((err, messages) => {
+        if (err) {
+        }
+        req.io.sockets.emit('new message', messages);
+      });
+  });
+});
+
 // single chat view
 router.get('/chat/:id', verifyToken, (req, res, next) => {
   Message.find({ conversationId: req.params.id })
@@ -90,6 +120,9 @@ router.get('/chat/:id', verifyToken, (req, res, next) => {
         res.send({ error: err });
         return next(err);
       }
+
+      console.log('messages are------------->', messages);
+
       res.render('pages/chat', {
         conversations: messages,
         conversationId: req.params.id,
