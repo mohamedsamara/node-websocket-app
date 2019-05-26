@@ -47,9 +47,7 @@ socket.on('new message', function(data) {
 
   if (data.sender._id == sender) {
     $('.chat-window').append(
-      "<div class='message'><label>" +
-        data.sender.name +
-        "</label><p class='owner'><span>" +
+      "<div class='message'><label>You</label><p class='owner'><span>" +
         data.body +
         '</span></p><strong>' +
         new Date(data.createdAt).toLocaleString(options) +
