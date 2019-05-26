@@ -4,10 +4,12 @@
 
 A Real Time Chat Application that enable users to login and chat with friends  
 
+![Node Websocket App](/app/public/images/Node-Websocket-App.gif)
+
 * features:
   * Node provides the backend environment for this application
   * Express middleware is used to handle requests, routes and views
-  * EJS is used to render server side templates 
+  * EJS is used to render server side templates
   * Socket.IO enables real time bidirectional communication
 
 
