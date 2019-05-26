@@ -1,34 +1,31 @@
 <div class="row mt-5">
   <div class="col-md-6 m-auto">
     <div class="card card-body">
-      <h1 class="text-center mb-3">Chat Here</h1>
+      <h3 class="text-center mb-3">Reply to this Chat</h3>
         <form action="/chat/reply/<%=conversationId  %>" method="POST">
           <div class="chat-window">
                 <% for(var i=0; i < conversations.length; i++) { %>
                       <% if((user._id).toString() == (conversations[i].sender._id).toString()){ %>
-                        <p class="owner">
+                        <div class="message">
                           <label>You</label>
+                          <p class="owner">
                             <span><%= conversations[i].body %></span>
-                        </p>
+                          </p>
+                          <strong><%= new Date(conversations[i].createdAt).toLocaleString(); %></strong>
+                        </div>
                       <% } else{ %>
-                        <p class="sender">
+                        <div class="message">
                           <label><%= conversations[i].sender.name %></label>
-                          <span><%= conversations[i].body %></span>
-                        </p>
+                          <p class="sender">
+                            <span><%= conversations[i].body %></span>
+                          </p>
+                          <strong><%= new Date(conversations[i].createdAt).toLocaleString(); %></strong>
+                        </div>
                       <% } %>
 
-                      <% if(!true){ %>
-                        <input type="hidden" id="participant" data-sender="<%= conversations[i].sender.name %>">
-                       <% break; } %>
-
-                      <strong><%= new Date(conversations[i].createdAt).toLocaleString(); %></strong>
                 <% } %>
-
-                <p id="typing">
-                </p>
               </div>
               <input type="hidden" id="sender" data-owner="<%= user._id %>">
-              <input type="hidden" id="conversation" data-id="<%= conversationId %>">
               <div class="form-group">
                 <textarea id="message" name="message" class="form-control" rows="3">Type your message here....</textarea>
               </div>

@@ -46,28 +46,35 @@ router.get('/chats', verifyToken, (req, res) => {
       }
 
       const fullConversations = [];
-      conversations.forEach(conversation => {
-        Message.find({ conversationId: conversation._id })
-          .sort('-createdAt')
-          .limit(1)
-          .populate({
-            path: 'sender',
-            select: 'name username',
-          })
-          .exec((err, message) => {
-            if (err) {
-              res.send({ error: err });
-              return next(err);
-            }
-            fullConversations.push(message);
-            if (fullConversations.length === conversations.length) {
-              res.render('pages/chats', {
-                conversations: fullConversations,
-                moment: moment,
-              });
-            }
-          });
-      });
+
+      if (conversations.length > 0) {
+        conversations.forEach(conversation => {
+          Message.find({ conversationId: conversation._id })
+            .sort('-createdAt')
+            .limit(1)
+            .populate({
+              path: 'sender',
+              select: 'name username',
+            })
+            .exec((err, message) => {
+              if (err) {
+                res.send({ error: err });
+                return next(err);
+              }
+              fullConversations.push(message);
+              if (fullConversations.length === conversations.length) {
+                res.render('pages/chats', {
+                  conversations: fullConversations,
+                  moment: moment,
+                });
+              }
+            });
+        });
+      } else {
+        res.render('pages/chats', {
+          conversations: fullConversations,
+        });
+      }
     });
 });
 
@@ -90,17 +97,17 @@ router.post('/chat/reply/:id', verifyToken, (req, res, next) => {
       return next(err);
     }
 
-    Message.find({ conversationId: req.params.id })
+    Message.find({ conversationId: req.params.id, _id: sentReply._id })
       .select('createdAt body sender')
-      .sort('-createdAt')
-      .limit(1)
       .populate({
         path: 'sender',
         select: 'name username',
       })
       .exec((err, messages) => {
         if (err) {
+          console.log(err);
         }
+        res.status(204).send();
         req.io.sockets.emit('new message', messages);
       });
   });
@@ -120,8 +127,6 @@ router.get('/chat/:id', verifyToken, (req, res, next) => {
         res.send({ error: err });
         return next(err);
       }
-
-      console.log('messages are------------->', messages);
 
       res.render('pages/chat', {
         conversations: messages,
