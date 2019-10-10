@@ -18,7 +18,7 @@ A Real Time Chat Application that enable users to login and chat with friends
 Some basic Git commands are:
 
 ```
-$ git clone https://github.com/mohamedsamara/Node-Websocket-App.git
+$ git clone https://github.com/mohamedsamara/node-websocket-app.git
 $ cd project
 $ npm install
 $ bower install
