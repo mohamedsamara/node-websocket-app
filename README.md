@@ -4,8 +4,6 @@
 
 A Real Time Chat Application that enable users to login and chat with friends  
 
-![Node Websocket App](/app/public/images/Node-Websocket-App.gif)
-
 * features:
   * Node provides the backend environment for this application
   * Express middleware is used to handle requests, routes and views
@@ -21,7 +19,6 @@ Some basic Git commands are:
 $ git clone https://github.com/mohamedsamara/node-websocket-app.git
 $ cd project
 $ npm install
-$ bower install
 
 ```
 
