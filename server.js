@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const passport = require('passport');
+const socketio = require('socket.io');
 
 const path = require('path');
 
@@ -13,17 +14,15 @@ const PORT = process.env.PORT || 5000;
 
 const database = require('./app/database');
 const routes = require('./app/routes');
-const ioServer = require('./app/socket');
+const socketServer = require('./app/socket');
 const sessionSecret = require('./app/config/keys').sessionSecret;
 
-let server;
-server = app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`app listening on port ${PORT}!`);
 });
 
-const io = require('socket.io').listen(server);
-
-ioServer(io);
+const io = socketio(server);
+socketServer(io);
 
 // set public folder
 app.use(express.static(path.join(__dirname, 'app/public')));
@@ -52,7 +51,7 @@ app.use(passport.session());
 
 require('./app/auth/passportLocal');
 
-// inject user data in all templates
+// inject user data in templates
 app.use((req, res, next) => {
   res.locals.user = req.user;
   req.io = io;

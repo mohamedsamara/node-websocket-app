@@ -25,7 +25,7 @@ $(document).ready(function () {
 });
 
 // socket setup
-var socket = io.connect('http://localhost:5000');
+var socket = io();
 
 var sender = $('#sender').attr('data-owner');
 
