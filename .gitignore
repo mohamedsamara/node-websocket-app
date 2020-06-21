@@ -2,8 +2,8 @@
 node_modules
 bower_components
 package-lock.json
-.git
 
 # Cruft
 .DS_Store
 .env
+.vscode

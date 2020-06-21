@@ -2,7 +2,7 @@ const passport = require('passport');
 
 const verifyToken = (req, res, next) => {
   if (req.headers.authorization) {
-    passport.authenticate('jwt', { session: false }, function(err, user, info) {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
       if ((!err || !info) && user) {
         req.user = user;
         return next();

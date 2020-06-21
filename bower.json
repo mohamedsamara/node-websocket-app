@@ -2,28 +2,13 @@
   "name": "node-websocket-app",
   "description": "Node Websocket Application",
   "main": "server.js",
-  "authors": [
-    "Mohamed Samara (https://github.com/mohamedsamara)"
-  ],
+  "authors": ["Mohamed Samara (https://github.com/mohamedsamara)"],
   "license": "MIT",
-  "keywords": [
-    "node",
-    "express",
-    "mongoose",
-    "ejs",
-    "socket-io"
-  ],
+  "keywords": ["node", "express", "mongoose", "ejs", "socket-io"],
   "homepage": "https://github.com/mohamedsamara/node-websocket-app#readme",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
+  "ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"],
   "dependencies": {
     "bootstrap": "^4.3.1",
-    "jquery": "^3.4.1",
-    "components-font-awesome": "^5.4.2"
+    "jquery": "^3.4.1"
   }
 }

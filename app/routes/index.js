@@ -4,9 +4,6 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const moment = require('moment');
 
-// const jwt = require('jsonwebtoken');
-
-const keys = require('../config/keys');
 const { verifyToken, passAuthenticated } = require('../auth/verify');
 
 // Bring in Models
@@ -26,7 +23,7 @@ router.get('/register', passAuthenticated, (req, res) => {
 
 // get all recipients
 router.post('/recipients', verifyToken, (req, res) => {
-  User.find({}, function(err, users) {
+  User.find({}, (err, users) => {
     if (err) {
       console.log(err);
     } else {
@@ -48,13 +45,13 @@ router.get('/chats', verifyToken, (req, res) => {
       const fullConversations = [];
 
       if (conversations.length > 0) {
-        conversations.forEach(conversation => {
+        conversations.forEach((conversation) => {
           Message.find({ conversationId: conversation._id })
             .sort('-createdAt')
             .limit(1)
             .populate({
               path: 'sender',
-              select: 'name username',
+              select: 'name username'
             })
             .exec((err, message) => {
               if (err) {
@@ -65,14 +62,14 @@ router.get('/chats', verifyToken, (req, res) => {
               if (fullConversations.length === conversations.length) {
                 res.render('pages/chats', {
                   conversations: fullConversations,
-                  moment: moment,
+                  moment: moment
                 });
               }
             });
         });
       } else {
         res.render('pages/chats', {
-          conversations: fullConversations,
+          conversations: fullConversations
         });
       }
     });
@@ -88,7 +85,7 @@ router.post('/chat/reply/:id', verifyToken, (req, res, next) => {
   const reply = new Message({
     conversationId: req.params.id,
     body: req.body.message,
-    sender: req.user._id,
+    sender: req.user._id
   });
 
   reply.save((err, sentReply) => {
@@ -101,7 +98,7 @@ router.post('/chat/reply/:id', verifyToken, (req, res, next) => {
       .select('createdAt body sender')
       .populate({
         path: 'sender',
-        select: 'name username',
+        select: 'name username'
       })
       .exec((err, messages) => {
         if (err) {
@@ -120,7 +117,7 @@ router.get('/chat/:id', verifyToken, (req, res, next) => {
     .sort('createdAt')
     .populate({
       path: 'sender',
-      select: 'name username',
+      select: 'name username'
     })
     .exec((err, messages) => {
       if (err) {
@@ -130,7 +127,7 @@ router.get('/chat/:id', verifyToken, (req, res, next) => {
 
       res.render('pages/chat', {
         conversations: messages,
-        conversationId: req.params.id,
+        conversationId: req.params.id
       });
     });
 });
@@ -150,7 +147,7 @@ router.post('/chat/new', verifyToken, (req, res, next) => {
   }
 
   const conversation = new Conversation({
-    participants: [req.user._id, req.body.recipient],
+    participants: [req.user._id, req.body.recipient]
   });
 
   conversation.save((err, newConversation) => {
@@ -162,7 +159,7 @@ router.post('/chat/new', verifyToken, (req, res, next) => {
     const message = new Message({
       conversationId: newConversation._id,
       body: req.body.message,
-      sender: req.user._id,
+      sender: req.user._id
     });
 
     message.save((err, newMessage) => {
@@ -173,7 +170,7 @@ router.post('/chat/new', verifyToken, (req, res, next) => {
 
       return res.status(200).json({
         message: 'Conversation started!',
-        conversationId: conversation._id,
+        conversationId: conversation._id
       });
     });
   });
@@ -201,16 +198,16 @@ router.post('/register', (req, res) => {
     name: name,
     email: email,
     username: username,
-    password: password,
+    password: password
   });
 
-  bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash(newUser.password, salt, function(err, hash) {
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(newUser.password, salt, (err, hash) => {
       if (err) {
         console.log(err);
       }
       newUser.password = hash;
-      newUser.save(function(err) {
+      newUser.save((err) => {
         if (err) {
           console.log(err);
           return;
@@ -226,7 +223,7 @@ router.post('/register', (req, res) => {
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', {
     successRedirect: '/profile',
-    failureRedirect: '/login',
+    failureRedirect: '/login'
   })(req, res, next);
 });
 
@@ -240,43 +237,5 @@ router.get('/logout', (req, res) => {
 router.get('*', (req, res) => {
   res.render('pages/404Page');
 });
-
-// Below is the login implemented by passport JWT Strategy
-// router.post('/login', (req, res) => {
-//   const email = req.body.email;
-//   const password = req.body.password;
-//
-//   User.findOne({ email }).then(user => {
-//     if (!user) {
-//       console.log('user', user);
-//     }
-//     bcrypt.compare(password, user.password).then(isMatch => {
-//       if (isMatch) {
-//         const payload = { id: user.id, name: user.name };
-//         jwt.sign(
-//           payload,
-//           keys.secretOrKey,
-//           { expiresIn: 3600 },
-//           (err, token) => {
-//             res.status(200).json({
-//               success: true,
-//               token: token,
-//               user: {
-//                 id: user.id,
-//                 username: user.username,
-//                 email: user.email,
-//               },
-//             });
-//           },
-//         );
-//       } else {
-//         res.status(404).json({
-//           success: false,
-//           error: 'Password Incorrect',
-//         });
-//       }
-//     });
-//   });
-// });
 
 module.exports = router;

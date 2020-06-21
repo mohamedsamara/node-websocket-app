@@ -1,10 +1,10 @@
-$(document).ready(function() {
+$(document).ready(function () {
   if (window.location.pathname == '/chat/add') {
     // populate recepients dropdown
     $.ajax({
       type: 'POST',
       url: '/recipients',
-      success: function(response) {
+      success: function (response) {
         var $select = $('#recipient');
 
         for (var idx in response) {
@@ -13,13 +13,13 @@ $(document).ready(function() {
               response[idx]._id +
               '>' +
               response[idx].name +
-              '</option>',
+              '</option>'
           );
         }
       },
-      error: function(err) {
+      error: function (err) {
         console.log(err);
-      },
+      }
     });
   }
 });
@@ -29,7 +29,7 @@ var socket = io.connect('http://localhost:5000');
 
 var sender = $('#sender').attr('data-owner');
 
-socket.on('new message', function(data) {
+socket.on('new message', function (data) {
   data = data[0];
 
   $('#message').val('');
@@ -37,12 +37,12 @@ socket.on('new message', function(data) {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
-    day: 'numeric',
+    day: 'numeric'
   };
 
   $('.chat-window').animate(
     { scrollTop: $('.chat-window')[0].scrollHeight },
-    'slow',
+    'slow'
   );
 
   if (data.sender._id == sender) {
@@ -51,7 +51,7 @@ socket.on('new message', function(data) {
         data.body +
         '</span></p><strong>' +
         new Date(data.createdAt).toLocaleString(options) +
-        '</strong></div>',
+        '</strong></div>'
     );
   } else {
     $('.chat-window').append(
@@ -61,7 +61,7 @@ socket.on('new message', function(data) {
         data.body +
         '</span></p><strong>' +
         new Date(data.createdAt).toLocaleString(options) +
-        '</strong></div>',
+        '</strong></div>'
     );
   }
 });

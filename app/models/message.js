@@ -7,20 +7,20 @@ const MessageSchema = new Schema(
   {
     conversationId: {
       type: Schema.Types.ObjectId,
-      required: true,
+      required: true
     },
     body: {
       type: String,
-      required: true,
+      required: true
     },
     sender: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
-    },
+      ref: 'User'
+    }
   },
   {
-    timestamps: true,
-  },
+    timestamps: true
+  }
 );
 
 module.exports = Mongoose.model('Message', MessageSchema);
