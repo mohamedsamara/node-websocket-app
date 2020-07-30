@@ -19,7 +19,6 @@ Some basic Git commands are:
 $ git clone https://github.com/mohamedsamara/node-websocket-app.git
 $ cd project
 $ npm install
-
 ```
 
 ## Start
